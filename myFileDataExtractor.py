@@ -122,6 +122,7 @@ while True:
 
     print 'All Lines: ', countAllLines
     print 'c1 Lines: ', countC1
+    print 'c2 Lines: ', countC2
     break
 
 

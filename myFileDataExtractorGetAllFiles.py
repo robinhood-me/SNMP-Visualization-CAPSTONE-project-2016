@@ -88,36 +88,54 @@ while True:
                     #print parts[8]
                     ifInUcastPkts = parts[8]
                     #print 'ifInUcastPkts: ', ifInUcastPkts
-                    ifInUcastPktsTotal = ifInUcastPktsTotal + int(ifInUcastPkts)
+                    try:
+                        ifInUcastPktsTotal = ifInUcastPktsTotal + int(ifInUcastPkts)
+                    except ValueError:
+                        pass
                     #print 'ifInUcastPktsTotal ',ifInUcastPktsTotal
 
 
 
                     ifInErrors = parts[9]
                     #print 'ifInErrors', ifInErrors
-                    ifInErrorsTotal = ifInErrorsTotal + int(ifInErrors)
+                    try:
+                        ifInErrorsTotal = ifInErrorsTotal + int(ifInErrors)
+                    except ValueError:
+                        pass
                     #print 'ifInErrorsTotal ',ifInErrorsTotal
 
 
 
                     ifInDiscards = parts[10]
                     #print 'ifInDiscards', ifInDiscards
-                    ifInDiscardsTotal = ifInDiscardsTotal + int(ifInDiscards)
+                    try:
+                        ifInDiscardsTotal = ifInDiscardsTotal + int(ifInDiscards)
+                    except ValueError:
+                        pass
                     #print 'ifInDiscardsTotal ',ifInDiscardsTotal
 
                     ifOutUcastPkts = parts[12]
                     #print 'ifOutUcastPkts', ifOutUcastPkts
-                    ifOutUcastPktsTotal = ifOutUcastPktsTotal + int(ifOutUcastPkts)
+                    try:
+                        ifOutUcastPktsTotal = ifOutUcastPktsTotal + int(ifOutUcastPkts)
+                    except ValueError:
+                        pass
                     #print 'ifOutUcastPktsTotal ',ifOutUcastPktsTotal
 
                     ifOutErrors = parts[13]
                     #print 'ifOutErrors', ifOutErrors
-                    ifOutErrorsTotal = ifOutErrorsTotal + int(ifOutErrors)
+                    try:
+                        ifOutErrorsTotal = ifOutErrorsTotal + int(ifOutErrors)
+                    except ValueError:
+                        pass
                     #print 'ifOutErrorsTotal ',ifOutErrorsTotal
 
                     ifOutDiscards = parts[14]
                     #print 'ifOutDiscards', ifOutDiscards
-                    ifOutDiscardsTotal = ifOutDiscardsTotal + int(ifOutDiscards)
+                    try:
+                        ifOutDiscardsTotal = ifOutDiscardsTotal + int(ifOutDiscards)
+                    except ValueError:
+                        pass
                     #print 'ifOutDiscardsTotal ',ifOutDiscardsTotal
 
 

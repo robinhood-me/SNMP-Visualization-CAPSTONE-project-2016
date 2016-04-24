@@ -34,12 +34,13 @@ ifOutUcastPktsTotal = 0
 ifOutErrorsTotal = 0
 ifOutDiscardsTotal = 0
 
-conn = sqlite3.connect('contentSNMP.sqlite')
+conn = sqlite3.connect('contentSNMPmini.sqlite')
 cur = conn.cursor()
 conn.text_factory = str
 
 # 9-ifInUcastPkts  , 10-ifInErrors  ,  11-ifInDiscards  ,  13-ifOutUcastPkts  ,  14-ifOutErrors  ,  15-ifOutDiscards
 
+cur.executescript('''DROP TABLE IF EXISTS WirelessFailure;''')
 cur.execute('''CREATE TABLE IF NOT EXISTS WirelessFailure
     (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ifInUcastPkts INTEGER, ifInErrors INTEGER, ifInDiscards INTEGER, ifOutUcastPkts INTEGER, ifOutErrors INTEGER, ifOutDiscards INTEGER)''')
 
@@ -49,7 +50,7 @@ while True:
     #files = glob.glob(path)
 
     #walk the path through all the subdirectories
-    fileset = formic.FileSet(include="**/*.gz", directory="/Users/robinhood/aa-workspace-python/GMANE/fall03/")
+    fileset = formic.FileSet(include="**/*.gz", directory="/Users/robinhood/aa-workspace-python/GMANE/-CAPSTONE-SNMP/fall03/")
     for filename in fileset:
         count = count + 1
         print filename
@@ -154,7 +155,20 @@ while True:
 conn.commit()
 print count
 print countF1
-
+print 'ifInUcastPktsTotal: ',ifInUcastPktsTotal
+print 'ifInErrorsTotal: ',ifInErrorsTotal
+print 'ifInDiscardsTotal: ',ifInDiscardsTotal
+print 'ifOutUcastPktsTotal: ',ifOutUcastPktsTotal
+print 'ifOutErrorsTotal: ',ifOutErrorsTotal
+print 'ifOutErrorsTotal: ',ifOutErrorsTotal
+percentInPktsErrors = ifInErrorsTotal / float(ifInUcastPktsTotal)
+percentOutPktsErrors = ifOutErrorsTotal / float(ifOutUcastPktsTotal)
+percentInPktsDiscarded = ifInDiscardsTotal / float(ifInUcastPktsTotal)
+percentOutPktsDiscarded = ifOutDiscardsTotal / float(ifOutUcastPktsTotal)
+print 'percentInPktsErrors: %',percentInPktsErrors
+print 'percentOutPktsErrors: %',percentOutPktsErrors
+print 'percentInPktsDiscarded: %',percentInPktsDiscarded
+print 'percentOutPktsDiscarded: %',percentOutPktsDiscarded
     #eachCompressedFile = glob2.glob('/Users/robinhood/aa-workspace-python/GMANE/fall03/*/**')
     #print eachCompressedFile
 """

@@ -169,13 +169,14 @@ print 'percentInPktsErrors: %',percentInPktsErrors
 print 'percentOutPktsErrors: %',percentOutPktsErrors
 print 'percentInPktsDiscarded: %',percentInPktsDiscarded
 print 'percentOutPktsDiscarded: %',percentOutPktsDiscarded
-    #eachCompressedFile = glob2.glob('/Users/robinhood/aa-workspace-python/GMANE/fall03/*/**')
-    #print eachCompressedFile
+
+
+
 """
 
 
 
-                #time.sleep(1)
+        #time.sleep(1)
 
         print 'All Lines: ', countAllLines
         print 'c1 Lines: ', countC1

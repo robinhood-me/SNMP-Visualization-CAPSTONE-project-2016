@@ -39,8 +39,8 @@ cur = conn.cursor()
 conn.text_factory = str
 
 # 9-ifInUcastPkts  , 10-ifInErrors  ,  11-ifInDiscards  ,  13-ifOutUcastPkts  ,  14-ifOutErrors  ,  15-ifOutDiscards
-
-cur.executescript('''DROP TABLE IF EXISTS WirelessFailure;''')
+cur.execute('''DROP TABLE IF EXISTS WirelessFailure ''')
+#cur.executescript('''DROP TABLE IF EXISTS WirelessFailure;''')
 cur.execute('''CREATE TABLE IF NOT EXISTS WirelessFailure
     (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ifInUcastPkts INTEGER, ifInErrors INTEGER, ifInDiscards INTEGER, ifOutUcastPkts INTEGER, ifOutErrors INTEGER, ifOutDiscards INTEGER)''')
 
@@ -153,8 +153,8 @@ while True:
 
     break
 conn.commit()
-print count
-print countF1
+print '\nFiles: ',count
+print 'f1 Lines: ',countF1
 print 'ifInUcastPktsTotal: ',ifInUcastPktsTotal
 print 'ifInErrorsTotal: ',ifInErrorsTotal
 print 'ifInDiscardsTotal: ',ifInDiscardsTotal

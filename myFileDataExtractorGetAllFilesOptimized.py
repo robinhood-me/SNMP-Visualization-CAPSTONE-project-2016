@@ -41,16 +41,16 @@ conn.text_factory = str
 # Create AP name table with only one entry per AP (no duplicate names)
 cur.execute('''DROP TABLE IF EXISTS AccessPoint_Name ''')
 #cur.executescript('''DROP TABLE IF EXISTS WirelessFailure;''')
-cur.execute('''CREATE TABLE IF NOT EXISTS AccessPoints
-    (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, APName TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS AccessPoint_Name
+    (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, APName TEXT UNIQUE)''')
 
 
 # 9-ifInUcastPkts  , 10-ifInErrors  ,  11-ifInDiscards  ,  13-ifOutUcastPkts  ,  14-ifOutErrors  ,  15-ifOutDiscards
 cur.execute('''DROP TABLE IF EXISTS WirelessFailure ''')
 #cur.executescript('''DROP TABLE IF EXISTS WirelessFailure;''')
 cur.execute('''CREATE TABLE IF NOT EXISTS WirelessFailure
-    (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ifInUcastPkts INTEGER, ifInErrors INTEGER, ifInDiscards INTEGER, ifOutUcastPkts INTEGER, ifOutErrors INTEGER, ifOutDiscards INTEGER)''')
-
+    (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ifInUcastPkts INTEGER, ifInErrors INTEGER, ifInDiscards INTEGER, ifOutUcastPkts INTEGER, ifOutErrors INTEGER, ifOutDiscards INTEGER, AP_id INTEGER)''')
+# may want to designate a key as a logical key to make it the main key or a key to be used in a WHERE or ORDER BY clause, searchable.
 
 
 while True:
@@ -67,19 +67,28 @@ while True:
         with gzip.open(filename, 'rb') as f:
             #file_content = f.read()
             for line in f:
-            #print file_content
+                # print line
             #while True:
             #    for line in file_content:
                     #countAllLines = countAllLines + 1
                 #print line
-                '''
-                if line.startswith("c1"):
+                """
+                if line.startswith("c1" or "cl"):
                     countC1 = countC1 + 1
                     line = line.rstrip()
-                    #print line
+                    # print line
 
-                    parts = line.split(',')
-                    #print parts
+                    parts1 = line.split(',')
+                    #print parts1[2]
+                    APName = parts1[2]
+                    #print APName
+
+                    cur.execute('''INSERT OR IGNORE INTO AccessPoint_Name (APName) VALUES (?)''', (APName,))
+
+                    cur.execute('SELECT id FROM AccessPoint_Name WHERE APName = ?', (APName, ))
+                    AP_id = cur.fetchone()[0]
+                    print AP_id
+
 
                 if line.startswith("c2"):
                     countC2 = countC2 + 1
@@ -88,7 +97,7 @@ while True:
 
                     parts = line.split(',')
                     #print parts
-                '''
+                """
                 if line.startswith("if"):
 
                     line = line.rstrip()
@@ -97,6 +106,9 @@ while True:
                     parts = line.split(',')
                     #print parts
                     #print parts[8]
+                    APName = parts[2]
+
+
                     ifInUcastPkts = parts[8]
                     #print 'ifInUcastPkts: ', ifInUcastPkts
 
@@ -154,8 +166,11 @@ while True:
                     except:
                         continue
                     countF1 = countF1 + 1
-                    cur.execute('''INSERT OR IGNORE INTO WirelessFailure (ifInUcastPkts, ifInErrors, ifInDiscards, ifOutUcastPkts, ifOutErrors, ifOutDiscards)
-                    VALUES (?, ?, ?, ?, ?, ? )''', (ifInUcastPkts, ifInErrors, ifInDiscards, ifOutUcastPkts, ifOutErrors, ifOutDiscards))
+                    cur.execute('''INSERT OR IGNORE INTO AccessPoint_Name (APName) VALUES (?)''', (APName,))
+                    cur.execute('SELECT id FROM AccessPoint_Name WHERE APName = ?', (APName, ))
+                    AP_id = cur.fetchone()[0]
+                    cur.execute('''INSERT OR IGNORE INTO WirelessFailure (ifInUcastPkts, ifInErrors, ifInDiscards, ifOutUcastPkts, ifOutErrors, ifOutDiscards, AP_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)''', (ifInUcastPkts, ifInErrors, ifInDiscards, ifOutUcastPkts, ifOutErrors, ifOutDiscards, AP_id))
 
                     # conn.commit()
                     if (countF1 % 50) == 0 : conn.commit()

@@ -38,11 +38,20 @@ conn = sqlite3.connect('contentSNMPmini.sqlite')
 cur = conn.cursor()
 conn.text_factory = str
 
+# Create AP name table with only one entry per AP (no duplicate names)
+cur.execute('''DROP TABLE IF EXISTS AccessPoint_Name ''')
+#cur.executescript('''DROP TABLE IF EXISTS WirelessFailure;''')
+cur.execute('''CREATE TABLE IF NOT EXISTS AccessPoints
+    (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, APName TEXT)''')
+
+
 # 9-ifInUcastPkts  , 10-ifInErrors  ,  11-ifInDiscards  ,  13-ifOutUcastPkts  ,  14-ifOutErrors  ,  15-ifOutDiscards
 cur.execute('''DROP TABLE IF EXISTS WirelessFailure ''')
 #cur.executescript('''DROP TABLE IF EXISTS WirelessFailure;''')
 cur.execute('''CREATE TABLE IF NOT EXISTS WirelessFailure
     (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ifInUcastPkts INTEGER, ifInErrors INTEGER, ifInDiscards INTEGER, ifOutUcastPkts INTEGER, ifOutErrors INTEGER, ifOutDiscards INTEGER)''')
+
+
 
 while True:
 
@@ -80,9 +89,8 @@ while True:
                     parts = line.split(',')
                     #print parts
                 '''
-
                 if line.startswith("if"):
-                    countF1 = countF1 + 1
+
                     line = line.rstrip()
                     # print line
 
@@ -91,6 +99,7 @@ while True:
                     #print parts[8]
                     ifInUcastPkts = parts[8]
                     #print 'ifInUcastPkts: ', ifInUcastPkts
+
                     try:
                         ifInUcastPktsTotal = ifInUcastPktsTotal + int(ifInUcastPkts)
                     except ValueError:
@@ -140,8 +149,11 @@ while True:
                     except ValueError:
                         pass
                     #print 'ifOutDiscardsTotal ',ifOutDiscardsTotal
-
-
+                    try:
+                        if int(ifInUcastPkts) == 0 and int(ifOutUcastPkts) == 0 : continue
+                    except:
+                        continue
+                    countF1 = countF1 + 1
                     cur.execute('''INSERT OR IGNORE INTO WirelessFailure (ifInUcastPkts, ifInErrors, ifInDiscards, ifOutUcastPkts, ifOutErrors, ifOutDiscards)
                     VALUES (?, ?, ?, ?, ?, ? )''', (ifInUcastPkts, ifInErrors, ifInDiscards, ifOutUcastPkts, ifOutErrors, ifOutDiscards))
 
